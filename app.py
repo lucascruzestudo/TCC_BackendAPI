@@ -48,7 +48,6 @@ def login():
     user_from_db = users_collection.find_one({'username': login_details['username']})
 
     if user_from_db and check_password_hash(user_from_db['password'], login_details['password']):
-        print(user_from_db['password'])
         access_token = create_access_token(identity=user_from_db['username'])
         refresh_token = create_refresh_token(identity=user_from_db['username'])
         return jsonify(access_token=access_token, refresh_token=refresh_token), 200
