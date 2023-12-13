@@ -21,7 +21,11 @@ projects_collection = db["projects"]
 @app.route("/api/v1/register", methods=["POST"])
 def register():
     new_user = request.get_json()
-    role = new_user.get('role', DEFAULT_ROLE)
+
+    if 'role' not in new_user:
+        return jsonify({'msg': 'Role is required in the request body'}), 400
+
+    role = new_user['role']
 
     if role == 1:
         admkey = request.headers.get('AdmKey', None)
