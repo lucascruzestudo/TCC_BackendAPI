@@ -245,5 +245,36 @@ def manage_advisor():
 
     return jsonify(response), 200
 
+@app.route("/api/v1/projects", methods=["GET"])
+@jwt_required()
+def get_projects():
+    current_user = get_jwt_identity()
+    user_from_db = users_collection.find_one({'username': current_user})
+
+    if not user_from_db:
+        return jsonify({'msg': 'User not found', 'success': False}), 404
+
+    role = user_from_db["role"]
+
+    try:
+        if role > 0 and role <= 2:
+            projects = list(projects_collection.find({}, {"_id": 0}))
+        elif role == 3:
+            advisor_projects = list(projects_collection.find({"advisor.advisorId": str(user_from_db["_id"])}, {"_id": 0}))
+            if not advisor_projects:
+                return jsonify({'msg': 'You are not assigned to any projects as an advisor', 'success': True, 'projects': []}), 200
+            projects = advisor_projects
+        elif role == 4:
+            student_projects = list(projects_collection.find({"students.studentId": str(user_from_db["_id"])}, {"_id": 0}))
+            if not student_projects:
+                return jsonify({'msg': 'You do not have a project assigned', 'success': True, 'projects': []}), 200
+            projects = student_projects
+        else:
+            return jsonify({'msg': 'Invalid user role', 'success': False}), 403
+
+        return jsonify({'msg': 'Projects retrieved successfully', 'success': True, 'projects': projects}), 200
+    except Exception as e:
+        return jsonify({'msg': f'Error retrieving projects: {str(e)}', 'success': False}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
