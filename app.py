@@ -314,7 +314,6 @@ def is_user_in_project(user_id, project):
 
 @app.route("/api/v1/manage_files", methods=["POST", "DELETE"])
 @jwt_required()
-
 def manage_files():
     current_user = get_jwt_identity()
     user_from_db = users_collection.find_one({'username': current_user})
@@ -395,6 +394,9 @@ def manage_files():
             if attachment["filename"] == file_name:
                 if not stage["active"]:
                     return jsonify({'msg': 'Cannot delete file from inactive stage', 'success': False}), 400
+
+                if user_from_db["role"] == 3:
+                    return jsonify({'msg': 'Advisors are not allowed to delete files', 'success': False}), 403
 
                 os.remove(os.path.join(attachment["file_path"], file_name))
 
