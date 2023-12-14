@@ -103,7 +103,7 @@ def create_project():
             "stages": [
                 {
                     "stageId": 1,
-                    "stageName": "pre-projeto",
+                    "stageName": "Ficha de Inscrição",
                     "attachments": [],
                     "startDate": datetime.datetime.now(),
                     "dueDate": None,
@@ -111,7 +111,7 @@ def create_project():
                 },
                 {
                     "stageId": 2,
-                    "stageName": "desenvolvimento",
+                    "stageName": "Pré-Projeto",
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
@@ -119,12 +119,29 @@ def create_project():
                 },
                 {
                     "stageId": 3,
-                    "stageName": "documentação",
+                    "stageName": "Relatório Parcial",
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
                     "active": False
-                }
+                },
+                {
+                    "stageId": 4,
+                    "stageName": "Entrega Do Projeto",
+                    "attachments": [],
+                    "startDate": None,
+                    "dueDate": None,
+                    "active": False
+                },
+                {
+                    "stageId": 5,
+                    "stageName": "Entrega Revisada do Projeto",
+                    "attachments": [],
+                    "startDate": None,
+                    "dueDate": None,
+                    "active": False
+                },
+                
             ],
             "lastUpdate": datetime.datetime.now()
         }
