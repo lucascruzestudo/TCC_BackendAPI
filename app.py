@@ -375,9 +375,10 @@ def manage_files():
             file.save(file_path)
 
             attachments.append({
-                "title": file_title,
-                "filename": filename,
-                "file_path": file_path
+            "title": file_title,
+            "filename": filename,
+            "file_path": file_path,
+            "approved": False
             })
 
             project["lastUpdate"] = datetime.datetime.now()
