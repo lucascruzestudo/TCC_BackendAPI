@@ -378,7 +378,7 @@ def manage_files():
             "title": file_title,
             "filename": filename,
             "file_path": file_path,
-            "approved": False
+            "status": 0
             })
 
             project["lastUpdate"] = datetime.datetime.now()
@@ -409,7 +409,56 @@ def manage_files():
                 return jsonify({'msg': 'File deleted successfully', 'success': True}), 200
 
         return jsonify({'msg': 'File not found in the specified stage', 'success': False}), 404
+    
+@app.route("/api/v1/manage_file_status", methods=["POST"])
+@jwt_required()
+def manage_file_status():
+    current_user = get_jwt_identity()
+    user_from_db = users_collection.find_one({'username': current_user})
 
+    if user_from_db["role"] != 3:
+        return jsonify({'msg': 'Unauthorized to update file status', 'success': False}), 403
+
+    project_name = request.json.get("projectName")
+    stage_id = int(request.json.get("stageId"))
+    filename = request.json.get("filename")
+    new_status = int(request.json.get("newStatus"))
+
+    project = projects_collection.find_one({"projectName": project_name})
+    if not project:
+        return jsonify({'msg': 'Project not found', 'success': False}), 404
+
+    if not is_user_in_project(str(user_from_db["_id"]), project):
+        return jsonify({'msg': 'Unauthorized to update file status for this project', 'success': False}), 403
+
+    if user_from_db["role"] == 3 and str(user_from_db["_id"]) != str(project["advisor"]["advisorId"]):
+        return jsonify({'msg': 'Unauthorized to update file status. Not the advisor of this project', 'success': False}), 403
+
+    stage_index = stage_id - 1
+    stage = project["stages"][stage_index]
+    
+    if not stage["active"]:
+        return jsonify({'msg': 'Cannot update file status in an inactive stage', 'success': False}), 400
+
+    attachments = stage["attachments"]
+
+    file_to_update = None
+    for attachment in attachments:
+        if attachment["filename"] == filename:
+            file_to_update = attachment
+            break
+
+    if not file_to_update:
+        return jsonify({'msg': 'File not found in the specified stage', 'success': False}), 404
+
+    if new_status in (1,2):
+        file_to_update["status"] = new_status
+        project["lastUpdate"] = datetime.datetime.now()
+        projects_collection.replace_one({"projectName": project_name}, project)
+
+        return jsonify({'msg': 'File status updated successfully', 'success': True}), 200
+    else:
+        return jsonify({'msg': 'Invalid status value. Must be 1 (approved), or 2 (rejected)', 'success': False}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
