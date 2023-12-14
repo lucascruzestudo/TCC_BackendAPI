@@ -1,9 +1,11 @@
 import datetime
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, send_from_directory
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
+from werkzeug.utils import secure_filename
 from config import JWTKEY, ADMKEY, DEFAULT_ROLE, CONNECTION_STRING
 
 app = Flask(__name__)
@@ -17,6 +19,10 @@ client = MongoClient(CONNECTION_STRING)
 db = client["labtcc"]
 users_collection = db["users"]
 projects_collection = db["projects"]
+
+UPLOAD_FOLDER = 'tmp/files'
+ALLOWED_EXTENSIONS = {'docx', 'pdf', 'py' ,'png'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/api/v1/register", methods=["POST"])
 def register():
@@ -296,6 +302,111 @@ def get_projects():
         return jsonify({'msg': 'Projects retrieved successfully', 'success': True, 'projects': projects}), 200
     except Exception as e:
         return jsonify({'msg': f'Error retrieving projects: {str(e)}', 'success': False}), 500
+    
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def is_user_in_project(user_id, project):
+    advisor_id = str(project["advisor"]["advisorId"]) if project["advisor"] else None
+    student_ids = [str(s["studentId"]) for s in project["students"]] if project["students"] else []
+
+    return user_id in student_ids or user_id == advisor_id
+
+@app.route("/api/v1/manage_files", methods=["POST", "DELETE"])
+@jwt_required()
+
+def manage_files():
+    current_user = get_jwt_identity()
+    user_from_db = users_collection.find_one({'username': current_user})
+
+    if user_from_db["role"] not in [3, 4]:
+        return jsonify({'msg': 'Unauthorized to manage files', 'success': False}), 403
+
+    project_name = request.form.get("projectName")
+    stage_id = int(request.form.get("stageId"))
+    file_action = request.method
+
+    project = projects_collection.find_one({"projectName": project_name})
+    if not project:
+        return jsonify({'msg': 'Project not found', 'success': False}), 404
+
+    if user_from_db["role"] == 4 and not is_user_in_project(str(user_from_db["_id"]), project):
+        return jsonify({'msg': 'Unauthorized to manage files for this project', 'success': False}), 403
+
+    if user_from_db["role"] == 3 and not is_user_in_project(str(user_from_db["_id"]), project):
+        return jsonify({'msg': 'Unauthorized to manage files for this project', 'success': False}), 403
+
+    stage_index = stage_id - 1
+    stage = project["stages"][stage_index]
+    attachments = stage["attachments"]
+
+    if not stage["active"]:
+        return jsonify({'msg': 'Cannot perform file action on inactive stage', 'success': False}), 400
+
+    if file_action == "POST":
+        file_title = request.form.get("title")
+
+        if 'file' not in request.files:
+            return jsonify({'msg': 'No file part', 'success': False}), 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            return jsonify({'msg': 'No selected file', 'success': False}), 400
+
+        if file and allowed_file(file.filename):
+            project_folder_path = os.path.join(app.config['UPLOAD_FOLDER'], str(project["_id"]))
+            if not os.path.exists(project_folder_path):
+                os.makedirs(project_folder_path)
+
+            stage_folder_path = os.path.join(project_folder_path, f"stage_{stage_id}")
+            if not os.path.exists(stage_folder_path):
+                os.makedirs(stage_folder_path)
+
+            existing_file_names = [attachment["filename"] for attachment in attachments]
+            if file.filename in existing_file_names:
+                return jsonify({'msg': 'File with the same name already exists in the stage', 'success': False}), 400
+
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(stage_folder_path, filename)
+
+            if os.path.exists(file_path):
+                return jsonify({'msg': 'File with the same name already exists on the server', 'success': False}), 400
+
+            file.save(file_path)
+
+            attachments.append({
+                "title": file_title,
+                "filename": filename,
+                "file_path": file_path
+            })
+
+            project["lastUpdate"] = datetime.datetime.now()
+            projects_collection.replace_one({"projectName": project_name}, project)
+
+            return jsonify({'msg': 'File uploaded successfully', 'success': True}), 200
+
+        return jsonify({'msg': 'Invalid file type', 'success': False}), 400
+
+    elif file_action == "DELETE":
+        file_name = request.form.get("fileName")
+
+        for attachment in attachments:
+            if attachment["filename"] == file_name:
+                if not stage["active"]:
+                    return jsonify({'msg': 'Cannot delete file from inactive stage', 'success': False}), 400
+
+                os.remove(os.path.join(attachment["file_path"], file_name))
+
+                attachments.remove(attachment)
+
+                project["lastUpdate"] = datetime.datetime.now()
+                projects_collection.replace_one({"projectName": project_name}, project)
+
+                return jsonify({'msg': 'File deleted successfully', 'success': True}), 200
+
+        return jsonify({'msg': 'File not found in the specified stage', 'success': False}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)
