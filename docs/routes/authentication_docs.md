@@ -57,9 +57,9 @@ Erro (Chave de Admin Inválida)
 
 ### Notas Adicionais
 
-O campo role deve ser 1 para admin, 2 para coordenador, 3 para orientador, 4 para aluno.<br/>
-Se o campo role for 1 (admin), a chave de admin (AdmKey) deve ser fornecida no cabeçalho da requisição.<br/>
-Se o campo email, profile_picture ou full_name não forem fornecidos, serão definidos como vazio por padrão.<br/>
+- O campo role deve ser 1 para admin, 2 para coordenador, 3 para orientador, 4 para aluno.
+- Se o campo role for 1 (admin), a chave de admin (AdmKey) deve ser fornecida no cabeçalho da requisição.<br/>
+- Se o campo email, profile_picture ou full_name não forem fornecidos, serão definidos como vazio por padrão.<br/>
 
 ## Endpoint: `/api/v1/login`
 
