@@ -1,4 +1,4 @@
-## Endpoint: `/api/v1/manage_projects`
+## Endpoint: `/api/v1/projects`
 
 ### Descrição
 Este endpoint permite gerenciar projetos, incluindo a recuperação, criação e exclusão de projetos.
@@ -25,13 +25,13 @@ Este endpoint permite gerenciar projetos, incluindo a recuperação, criação e
 ### Exemplo de Uso
 ```bash
 # GET (Recupera projetos)
-curl -X GET -H "Authorization: Bearer seu_token_de_acesso" http://sua-api.com/api/v1/manage_projects
+curl -X GET -H "Authorization: Bearer seu_token_de_acesso" http://sua-api.com/api/v1/projects
 
 # POST (Cria projeto)
-curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Novo Projeto"}' http://sua-api.com/api/v1/manage_projects
+curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Novo Projeto"}' http://sua-api.com/api/v1/projects
 
 # DELETE (Exclui projeto)
-curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente"}' http://sua-api.com/api/v1/manage_projects
+curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente"}' http://sua-api.com/api/v1/projects
 ```
 
 Respostas de Exemplo
@@ -98,7 +98,7 @@ Erro (Projeto Não Encontrado)
 - A recuperação de projetos é condicional ao papel do usuário (admin, coordenador, orientador, aluno).
 - A criação e exclusão de projetos exigem função de admin ou coordenador.
 
-## Endpoint: `/api/v1/manage_students`
+## Endpoint: `/api/v1/students`
 
 ### Descrição
 Este endpoint permite gerenciar estudantes em projetos, incluindo a adição e remoção de estudantes de um projeto.
@@ -125,10 +125,10 @@ Este endpoint permite gerenciar estudantes em projetos, incluindo a adição e r
 ### Exemplo de Uso
 ```bash
 # POST (Adiciona estudantes a um projeto)
-curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "students": ["usuario1", "usuario2"]}' http://sua-api.com/api/v1/manage_students
+curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "students": ["usuario1", "usuario2"]}' http://sua-api.com/api/v1/students
 
 # DELETE (Remove estudantes de um projeto)
-curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "students": ["usuario1", "usuario2"]}' http://sua-api.com/api/v1/manage_students
+curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "students": ["usuario1", "usuario2"]}' http://sua-api.com/api/v1/students
 ```
 
 Respostas de Exemplo
@@ -191,7 +191,7 @@ Erro (Estudante Não Encontrado ou Inválido)
 - A adição e remoção de estudantes exigem a função de admin, coordenador ou orientador.
 - Os estudantes são identificados pelo nome de usuário, e a resposta inclui informações sobre os estudantes gerenciados.
 
-## Endpoint: `/api/v1/manage_advisor`
+## Endpoint: `/api/v1/advisors`
 
 ### Descrição
 Este endpoint permite gerenciar o orientador de um projeto, incluindo a atribuição e remoção de um orientador do projeto.
@@ -218,10 +218,10 @@ Este endpoint permite gerenciar o orientador de um projeto, incluindo a atribui�
 ### Exemplo de Uso
 ```bash
 # POST (Atribui orientador a um projeto)
-curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "advisor": "orientador1"}' http://sua-api.com/api/v1/manage_advisor
+curl -X POST -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "advisor": "orientador1"}' http://sua-api.com/api/v1/advisors
 
 # DELETE (Remove orientador de um projeto)
-curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "advisor": "orientador1"}' http://sua-api.com/api/v1/manage_advisor
+curl -X DELETE -H "Authorization: Bearer seu_token_de_acesso" -d '{"projectName": "Projeto Existente", "advisor": "orientador1"}' http://sua-api.com/api/v1/advisors
 ```
 
 Respostas de Exemplo
