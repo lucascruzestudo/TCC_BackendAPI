@@ -165,7 +165,7 @@ def get_stage_files():
     if not user_from_db:
         return jsonify({'msg': 'User not found', 'success': False}), 404
 
-    if user_from_db["role"] not in [2, 3]:
+    if user_from_db["role"] not in [2, 3, 4]:
         return jsonify({'msg': 'Unauthorized to get stage files', 'success': False}), 403
 
     project_name = request.args.get("projectName")

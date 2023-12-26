@@ -6,7 +6,7 @@ Este endpoint permite gerenciar arquivos associados a projetos, incluindo upload
 ### Métodos Possíveis
 - `POST`: Adiciona um arquivo a um estágio específico de um projeto (somente para orientadores e alunos).
 - `DELETE`: Remove um arquivo de um estágio específico de um projeto (somente para orientadores e alunos).
-- `GET`: Recupera informações sobre os arquivos de um estágio específico de um projeto (somente para coordenadores e orientadores).
+- `GET`: Recupera informações sobre os arquivos de um estágio específico de um projeto (somente para coordenadores, orientadores e alunos).
 
 ### Parâmetros
 - **Cabeçalho da Requisição**:
