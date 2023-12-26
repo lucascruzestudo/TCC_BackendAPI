@@ -85,10 +85,10 @@ def manage_files():
         return jsonify({'msg': 'Invalid file type', 'success': False}), 400
 
     elif file_action == "DELETE":
-        file_name = request.form.get("fileName")
+        file_name = request.form.get("title")
 
         for attachment in attachments:
-            if attachment["filename"] == file_name:
+            if attachment["title"] == file_name:
                 if not stage["active"]:
                     return jsonify({'msg': 'Cannot delete file from inactive stage', 'success': False}), 400
 
