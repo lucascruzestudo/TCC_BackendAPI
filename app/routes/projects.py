@@ -4,7 +4,7 @@ from bson import ObjectId
 from app import app, projects_collection, users_collection
 import datetime
 
-@app.route("/api/v1/manage_projects", methods=["GET", "POST", "DELETE"])
+@app.route("/api/v1/projects", methods=["GET", "POST", "DELETE"])
 @jwt_required()
 def manage_projects():
     current_user = get_jwt_identity()
@@ -121,7 +121,7 @@ def manage_projects():
         else:
             return jsonify({'msg': 'Unauthorized to create project', 'success': False}), 403
 
-@app.route("/api/v1/manage_students", methods=["POST", "DELETE"])
+@app.route("/api/v1/students", methods=["POST", "DELETE"])
 @jwt_required()
 def manage_students():
     current_user = get_jwt_identity()
@@ -177,7 +177,7 @@ def manage_students():
 
     return jsonify(response), 200
 
-@app.route("/api/v1/manage_advisor", methods=["POST", "DELETE"])
+@app.route("/api/v1/advisors", methods=["POST", "DELETE"])
 @jwt_required()
 def manage_advisor():
     current_user = get_jwt_identity()

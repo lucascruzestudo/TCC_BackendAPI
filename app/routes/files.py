@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from app.config import ALLOWED_EXTENSIONS
 from app.functions import allowed_file, is_user_in_project
 
-@app.route("/api/v1/manage_files", methods=["POST", "DELETE"])
+@app.route("/api/v1/files", methods=["POST", "DELETE"])
 @jwt_required()
 def manage_files():
     current_user = get_jwt_identity()
@@ -156,7 +156,7 @@ def manage_file_status():
     else:
         return jsonify({'msg': 'Invalid status value. Must be 1 (approved), or 2 (rejected)', 'success': False}), 400
     
-@app.route("/api/v1/get_files", methods=["GET"])
+@app.route("/api/v1/files", methods=["GET"])
 @jwt_required()
 def get_stage_files():
     current_user = get_jwt_identity()

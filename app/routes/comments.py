@@ -5,7 +5,7 @@ import datetime
 from app import app, projects_collection, users_collection
 from app.functions import is_user_in_project
 
-@app.route("/api/v1/manage_comments", methods=["POST", "DELETE"])
+@app.route("/api/v1/comments", methods=["POST", "DELETE"])
 @jwt_required()
 def manage_comments():
     current_user = get_jwt_identity()
