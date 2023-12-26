@@ -3,12 +3,6 @@
 ### Descrição
 Este endpoint é utilizado para registrar um novo usuário na aplicação.
 
-### URL
-[POST] /api/v1/register
-
-markdown
-Copy code
-
 ### Métodos Possíveis
 - `POST`: Registra um novo usuário.
 
@@ -61,7 +55,7 @@ Erro (Chave de Admin Inválida)
 }
 ```
 
-Notas Adicionais
+### Notas Adicionais
 O campo role deve ser 1 para admin, 2 para coordenador, 3 para orientador, 4 para aluno.
 Se o campo role for 1 (admin), a chave de admin (AdmKey) deve ser fornecida no cabeçalho da requisição.
 Se o campo email, profile_picture ou full_name não forem fornecidos, serão definidos como vazio por padrão.
