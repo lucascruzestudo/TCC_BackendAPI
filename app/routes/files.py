@@ -6,7 +6,7 @@ from app import app, projects_collection, users_collection
 import datetime
 from werkzeug.utils import secure_filename
 from app.config import ALLOWED_EXTENSIONS
-from app.functions import is_user_in_project
+from app.functions import allowed_file, is_user_in_project
 
 @app.route("/api/v1/manage_files", methods=["POST", "DELETE"])
 @jwt_required()
