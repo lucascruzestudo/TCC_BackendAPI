@@ -95,14 +95,6 @@ Erro (Arquivo Não Encontrado)
 }
 ```
 
-Erro (Erro Interno do Servidor)
-```
-{
-  "msg": "Internal Server Error",
-  "success": false
-}
-```
-
 ### Notas Adicionais
 
 - A adição e remoção de comentários são permitidas apenas para orientadores e alunos.
