@@ -28,7 +28,9 @@ Copy code
 
 ### Exemplo de Uso
 ```bash
-curl -X POST http://sua-api.com/api/v1/register -d '{"username": "novo_usuario", "password": "senha123", "role": 2, "email": "usuario@email.com"}'```
+curl -X POST http://sua-api.com/api/v1/register -d '{"username": "novo_usuario", "password": "senha123", "role": 2, "email": "usuario@email.com"}'
+```
+
 Respostas de Exemplo
 Sucesso (Criação de Usuário)
 
