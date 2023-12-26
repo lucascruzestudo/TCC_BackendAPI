@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-O Laboratório de TCC é uma plataforma desenvolvida para auxiliar coordenadores e orientadores de projetos da Faculdade XXXXX no acompanhamento padronizado e eficiente dos projetos de seus alunos. O objetivo principal é promover a organização e aprimorar a qualidade dos projetos de TCC (Trabalho de Conclusão de Curso).
+O Laboratório de TCC é uma plataforma desenvolvida para auxiliar coordenadores e orientadores de projetos da Faculdade FATEC Baixada Santista - Rubens Lara no acompanhamento padronizado e eficiente dos projetos de seus alunos. O objetivo principal é promover a organização e aprimorar a qualidade dos projetos de TCC (Trabalho de Conclusão de Curso).
 
 ## Funcionalidades Principais
 
