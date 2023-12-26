@@ -32,26 +32,34 @@ curl -X POST http://sua-api.com/api/v1/register -d '{"username": "novo_usuario",
 ```
 
 Respostas de Exemplo
-Sucesso (Criação de Usuário)
 
+Sucesso (Criação de Usuário)
+```
 {
   "msg": "User created successfully"
 }
-Erro (Nome de Usuário Já Existe)
+```
 
+Erro (Nome de Usuário Já Existe)
+```
 {
   "msg": "Username already exists"
 }
-Erro (Role Ausente no Corpo da Requisição)
+```
 
+Erro (Role Ausente no Corpo da Requisição)
+```
 {
   "msg": "Role is required in the request body"
 }
-Erro (Chave de Admin Inválida)
+```
 
+Erro (Chave de Admin Inválida)
+```
 {
   "msg": "Invalid admkey for admin registration"
 }
+```
 
 Notas Adicionais
 O campo role deve ser 1 para admin, 2 para coordenador, 3 para orientador, 4 para aluno.
