@@ -4,23 +4,66 @@ from bson import ObjectId
 from app import app, projects_collection, users_collection
 import datetime
 
-@app.route("/api/v1/manage_projects", methods=["POST"])
+@app.route("/api/v1/manage_projects", methods=["GET", "POST", "DELETE"])
 @jwt_required()
-def create_project():
+def manage_projects():
     current_user = get_jwt_identity()
     user_from_db = users_collection.find_one({'username': current_user})
-    
-    if user_from_db["role"] in [1, 2]:
-        projectName = request.get_json().get("projectName")
 
-        if projectName is None or projectName == "":
-            return jsonify({'msg': 'Project name cannot be null or empty'}), 400
+    if not user_from_db:
+        return jsonify({'msg': 'User not found', 'success': False}), 404
 
-        existing_project = projects_collection.find_one({"projectName": projectName})
-        if existing_project:
-            return jsonify({'msg': 'Project with the same name already exists'}), 400
+    role = user_from_db["role"]
 
-        new_project = {
+    if request.method == "GET":
+        try:
+            if role > 0 and role <= 2:
+                projects = list(projects_collection.find({}, {"_id": 0}))
+            elif role == 3:
+                advisor_projects = list(projects_collection.find({"advisor.advisorId": str(user_from_db["_id"])}, {"_id": 0}))
+                if not advisor_projects:
+                    return jsonify({'msg': 'You are not assigned to any projects as an advisor', 'success': True, 'projects': []}), 200
+                projects = advisor_projects
+            elif role == 4:
+                student_projects = list(projects_collection.find({"students.studentId": str(user_from_db["_id"])}, {"_id": 0}))
+                if not student_projects:
+                    return jsonify({'msg': 'You do not have a project assigned', 'success': True, 'projects': []}), 200
+                projects = student_projects
+            else:
+                return jsonify({'msg': 'Invalid user role', 'success': False}), 403
+
+            return jsonify({'msg': 'Projects retrieved successfully', 'success': True, 'projects': projects}), 200
+        except Exception as e:
+            return jsonify({'msg': f'Error retrieving projects: {str(e)}', 'success': False}), 500
+        
+    elif request.method == "DELETE":
+        if user_from_db["role"] in [1, 2]:
+            project_name_to_delete = request.get_json().get("projectName")
+
+            if project_name_to_delete is None or project_name_to_delete == "":
+                return jsonify({'msg': 'Project name to delete cannot be null or empty', 'success': False}), 400
+
+            deleted_project = projects_collection.delete_one({"projectName": project_name_to_delete})
+
+            if deleted_project.deleted_count > 0:
+                return jsonify({'msg': 'Project deleted successfully', 'success': True}), 200
+            else:
+                return jsonify({'msg': 'Project not found or you do not have permission to delete it', 'success': False}), 404
+        else:
+            return jsonify({'msg': 'Unauthorized to delete project', 'success': False}), 403
+
+    elif request.method == "POST":
+        if user_from_db["role"] in [1, 2]:
+            projectName = request.get_json().get("projectName")
+
+            if projectName is None or projectName == "":
+                return jsonify({'msg': 'Project name cannot be null or empty', 'success': False}), 400
+
+            existing_project = projects_collection.find_one({"projectName": projectName})
+            if existing_project:
+                return jsonify({'msg': 'Project with the same name already exists', 'success': False}), 400
+
+            new_project = {
             "projectName": projectName,
             "active": True,
             "students": [],
@@ -72,11 +115,11 @@ def create_project():
             ],
             "lastUpdate": datetime.datetime.now()
         }
-        
-        projects_collection.insert_one(new_project)
-        return jsonify({'msg': 'Project created successfully'}), 201
-    else:
-        return jsonify({'msg': 'Unauthorized to create project'}), 403
+
+            projects_collection.insert_one(new_project)
+            return jsonify({'msg': 'Project created successfully', 'success': True}), 201
+        else:
+            return jsonify({'msg': 'Unauthorized to create project', 'success': False}), 403
 
 @app.route("/api/v1/manage_students", methods=["POST", "DELETE"])
 @jwt_required()
@@ -189,35 +232,3 @@ def manage_advisor():
     }
 
     return jsonify(response), 200
-
-@app.route("/api/v1/get_projects", methods=["GET"])
-@jwt_required()
-def get_projects():
-    current_user = get_jwt_identity()
-    user_from_db = users_collection.find_one({'username': current_user})
-
-    if not user_from_db:
-        return jsonify({'msg': 'User not found', 'success': False}), 404
-
-    role = user_from_db["role"]
-
-    try:
-        if role > 0 and role <= 2:
-            projects = list(projects_collection.find({}, {"_id": 0}))
-        elif role == 3:
-            advisor_projects = list(projects_collection.find({"advisor.advisorId": str(user_from_db["_id"])}, {"_id": 0}))
-            if not advisor_projects:
-                return jsonify({'msg': 'You are not assigned to any projects as an advisor', 'success': True, 'projects': []}), 200
-            projects = advisor_projects
-        elif role == 4:
-            student_projects = list(projects_collection.find({"students.studentId": str(user_from_db["_id"])}, {"_id": 0}))
-            if not student_projects:
-                return jsonify({'msg': 'You do not have a project assigned', 'success': True, 'projects': []}), 200
-            projects = student_projects
-        else:
-            return jsonify({'msg': 'Invalid user role', 'success': False}), 403
-
-        return jsonify({'msg': 'Projects retrieved successfully', 'success': True, 'projects': projects}), 200
-    except Exception as e:
-        return jsonify({'msg': f'Error retrieving projects: {str(e)}', 'success': False}), 500
-    
