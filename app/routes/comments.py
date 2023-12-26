@@ -3,12 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
 import datetime
 from app import app, projects_collection, users_collection
-
-def is_user_in_project(user_id, project):
-    advisor_id = str(project["advisor"]["advisorId"]) if project["advisor"] else None
-    student_ids = [str(s["studentId"]) for s in project["students"]] if project["students"] else []
-
-    return user_id in student_ids or user_id == advisor_id
+from app.functions import is_user_in_project
 
 @app.route("/api/v1/manage_comments", methods=["POST", "DELETE"])
 @jwt_required()

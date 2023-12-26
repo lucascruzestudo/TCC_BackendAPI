@@ -4,12 +4,6 @@ from bson import ObjectId
 from app import app, projects_collection, users_collection
 import datetime
 
-def is_user_in_project(user_id, project):
-    advisor_id = str(project["advisor"]["advisorId"]) if project["advisor"] else None
-    student_ids = [str(s["studentId"]) for s in project["students"]] if project["students"] else []
-
-    return user_id in student_ids or user_id == advisor_id
-
 @app.route("/api/v1/manage_projects", methods=["POST"])
 @jwt_required()
 def create_project():
