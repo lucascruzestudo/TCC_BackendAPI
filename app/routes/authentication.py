@@ -26,6 +26,10 @@ def register():
     hashed_password = generate_password_hash(new_user["password"], method='scrypt')
     new_user["password"] = hashed_password
 
+    new_user.setdefault("email", "")
+    new_user.setdefault("profile_picture", "")
+    new_user.setdefault("full_name", "")
+
     doc = users_collection.find_one({"username": new_user["username"]})
     if not doc:
         users_collection.insert_one(new_user)
