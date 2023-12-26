@@ -18,6 +18,9 @@ def manage_profile():
     elif request.method == "PUT":
         update_data = request.get_json()
 
+        if current_user != user_from_db['username']:
+            return jsonify({'msg': 'Unauthorized to update this profile'}), 403
+
         if 'email' in update_data:
             user_from_db['email'] = update_data['email']
 
@@ -34,3 +37,4 @@ def manage_profile():
             return jsonify({'msg': 'User deleted successfully'}), 200
         else:
             return jsonify({'msg': 'Unauthorized to delete user'}), 403
+
