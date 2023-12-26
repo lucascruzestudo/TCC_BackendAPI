@@ -10,7 +10,7 @@ Este endpoint é utilizado para registrar um novo usuário na aplicação.
 - **Corpo da Requisição (JSON)**:
   - `username` (obrigatório): Nome de usuário do novo usuário.
   - `password` (obrigatório): Senha do novo usuário.
-  - `role` (obrigatório): Função do novo usuário (1 para admin, 2 para usuário padrão).
+  - `role` (obrigatório): Função do novo usuário (1 para admin, 2 para coordenador, 3 para orientador, 4 para aluno).
   - `email` (opcional): Endereço de e-mail do novo usuário.
   - `profile_picture` (opcional): URL da foto de perfil do novo usuário.
   - `full_name` (opcional): Nome completo do novo usuário.
