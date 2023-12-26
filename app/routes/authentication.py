@@ -56,14 +56,3 @@ def refresh():
     access_token = create_access_token(identity=current_user)
     refresh_token = create_refresh_token(identity=current_user)
     return jsonify(access_token=access_token, refresh_token=refresh_token), 200
-
-@app.route("/api/v1/user", methods=["GET"])
-@jwt_required()
-def profile():
-    current_user = get_jwt_identity()
-    user_from_db = users_collection.find_one({'username': current_user})
-    if user_from_db:
-        del user_from_db['_id'], user_from_db['password']
-        return jsonify({'profile': user_from_db}), 200
-    else:
-        return jsonify({'msg': 'Profile not found'}), 404
