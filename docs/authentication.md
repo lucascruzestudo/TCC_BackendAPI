@@ -146,3 +146,43 @@ Erro (Token de Atualização Inválido ou Expirado)
 - O token de atualização (Refresh Token) deve ser incluído no cabeçalho da requisição usando a chave "Authorization".
 - Em caso de sucesso, são gerados novos tokens de acesso e atualização para o usuário.
 - Caso o token de atualização seja inválido ou tenha expirado, a requisição será negada.
+
+## Endpoint: `/api/v1/logout`
+
+### Descrição
+Este endpoint é utilizado para realizar o logout de um usuário autenticado.
+
+### URL
+```
+[POST] /api/v1/logout
+```
+
+### Métodos Possíveis
+- `POST`: Realiza o logout do usuário.
+
+### Parâmetros
+- Nenhum parâmetro adicional é necessário.
+
+### Requisitos de Autenticação
+- O acesso a este endpoint requer autenticação JWT. O token JWT deve ser incluído no cabeçalho da requisição.
+
+### Possíveis Erros
+- **401 Unauthorized**: Falha na autenticação ou token JWT ausente.
+
+### Exemplo de Uso
+```bash
+curl -X POST http://sua-api.com/api/v1/logout -H "Authorization: Bearer SEU_TOKEN_JWT"
+```
+
+### Resposta de Exemplo
+```json
+{
+  "msg": "Successfully logged out",
+  "success": true
+}
+```
+
+### Notas Adicionais
+- O token JWT deve ser incluído no cabeçalho da requisição usando o esquema "Bearer".
+- Após o logout, o token JWT é adicionado a uma lista de bloqueio (blocklist) para evitar o uso futuro.
+- Certifique-se de fornecer o token JWT válido no cabeçalho da requisição para uma logout bem-sucedido.
