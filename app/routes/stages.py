@@ -14,10 +14,16 @@ def approve_stage():
         return jsonify({'msg': 'Unauthorized to approve stages', 'success': False}), 403
 
     try:
-        project = projects_collection.find_one({"advisor.advisorId": str(user_from_db["_id"])})
+        data = request.get_json()
+        project_name = data.get("projectName")
+
+        if not project_name:
+            return jsonify({'msg': 'Invalid request body, project name is required', 'success': False}), 400
+
+        project = projects_collection.find_one({"projectName": project_name, "advisor.advisorId": str(user_from_db["_id"])})
 
         if not project:
-            return jsonify({'msg': 'Project not found or you are not the advisor for any project', 'success': False}), 404
+            return jsonify({'msg': 'Project not found or you are not the advisor for this project', 'success': False}), 404
 
         current_stage_id = project.get("currentStage", 0)
 
@@ -46,7 +52,7 @@ def approve_stage():
 
             project["lastUpdate"] = datetime.datetime.now()
 
-            projects_collection.replace_one({"advisor.advisorId": str(user_from_db["_id"])}, project)
+            projects_collection.replace_one({"projectName": project_name, "advisor.advisorId": str(user_from_db["_id"])}, project)
 
             return jsonify({'msg': 'Stage approved successfully', 'success': True}), 200
         else:
@@ -54,6 +60,7 @@ def approve_stage():
 
     except Exception as e:
         return jsonify({'msg': f'Error approving stage: {str(e)}', 'success': False}), 500
+
     
 @app.route("/api/v1/stages/revert", methods=["POST"])
 @jwt_required()
