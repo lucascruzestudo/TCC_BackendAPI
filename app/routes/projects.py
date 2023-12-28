@@ -66,10 +66,12 @@ def manage_projects():
             new_project = {
             "projectName": projectName,
             "active": True,
+            "completed": False,
             "students": [],
             "advisor": {},
             "startDate": datetime.datetime.now(),
             "dueDate": None,
+            "currentStage": 1,
             "stages": [
                 {
                     "stageId": 1,
@@ -77,7 +79,8 @@ def manage_projects():
                     "attachments": [],
                     "startDate": datetime.datetime.now(),
                     "dueDate": None,
-                    "active": True
+                    "active": True,
+                    "completed": False
                 },
                 {
                     "stageId": 2,
@@ -85,7 +88,8 @@ def manage_projects():
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
-                    "active": False
+                    "active": False,
+                    "completed": False
                 },
                 {
                     "stageId": 3,
@@ -93,7 +97,8 @@ def manage_projects():
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
-                    "active": False
+                    "active": False,
+                    "completed": False
                 },
                 {
                     "stageId": 4,
@@ -101,7 +106,8 @@ def manage_projects():
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
-                    "active": False
+                    "active": False,
+                    "completed": False
                 },
                 {
                     "stageId": 5,
@@ -109,7 +115,8 @@ def manage_projects():
                     "attachments": [],
                     "startDate": None,
                     "dueDate": None,
-                    "active": False
+                    "active": False,
+                    "completed": False
                 },
                 
             ],

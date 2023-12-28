@@ -19,4 +19,4 @@ UPLOAD_FOLDER = 'tmp/files'
 ALLOWED_EXTENSIONS = {'docx', 'pdf', 'py', 'png'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-from app.routes import authentication, projects, files, comments
+from app.routes import authentication, projects, files, comments, stages, profiles
