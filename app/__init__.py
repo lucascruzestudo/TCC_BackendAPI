@@ -3,7 +3,10 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from pymongo import MongoClient
 from app.config import CONNECTION_STRING, JWTKEY
+import dns.resolver
 
+dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
+dns.resolver.default_resolver.nameservers = ['8.8.8.8']
 app = Flask(__name__)
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = JWTKEY
