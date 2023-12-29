@@ -25,3 +25,7 @@ O módulo de gerenciamento de arquivos permite aos usuários (orientadores e alu
 ### Comentários (Comments)
 
 O módulo de comentários possibilita a adição e remoção de comentários associados a arquivos específicos em estágios de projetos. Orientadores e alunos podem utilizar essa funcionalidade para discutir e registrar informações relevantes sobre os documentos do projeto.
+
+### Estágios (Stages)
+
+Este endpoint destina-se à aprovação/reversão da etapa atual de um projeto. A ação de aprovação/reversão pode ser realizada exclusivamente pelo orientador do projeto, garantindo que apenas o usuário autorizado execute essa operação.
